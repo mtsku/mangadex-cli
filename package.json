@@ -1,6 +1,6 @@
 {
   "name": "@mtsku/mangadex-cli",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Production-ready MangaDex CLI for discovery, manga/chapter lookup, follow feed, and recommendations via direct MangaDex API.",
   "license": "MIT",
   "type": "module",

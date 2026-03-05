@@ -1,65 +1,49 @@
 # mangadex-cli
 
-Practical MangaDex CLI for daily use, with public read commands plus auth-aware workflows (follow feed, reading-status-aware recommendations).
+Direct MangaDex CLI for discovery, manga/chapter lookup, follow-feed checks, and recommendations.
 
 ## Features
 
 - Discovery/search
-  - manga search
-  - author search
-  - group search
-  - show works by author/group
+  - Manga, author, and group search
+  - Works by author or group
 - Manga/chapter info
-  - manga details (synopsis, tags, status, links)
-  - chapter lists + latest chapters by manga
-  - chapter metadata output
-- Follow feed/updates
-  - check followed manga updates in time windows (`24h`, `7d`, etc.)
+  - Manga details, chapter lists, latest chapters, chapter metadata
+- Feed updates
+  - Followed manga updates by time window (`24h`, `7d`, etc.)
 - Recommendations
-  - tag-based + optional followed-feed inferred tags
-  - optional exclusion of reading/read/followed entries where API allows
-  - transparent heuristic output
-- Auth-aware
-  - no-auth public reads
-  - token-based auth + OAuth code exchange/refresh helpers
-  - local token storage guidance
-- Output/runtime
-  - human-readable output + `--json`
-  - retry/backoff for transient API failures
+  - Tag-based suggestions
+  - Optional followed-feed inferred tags
+  - Optional library-aware exclusions where endpoint access allows
+- Auth and output
+  - Public read commands without auth
+  - OAuth/token workflows for account-specific commands
+  - Human output and global `--json`
 
 ## Install
 
-**For users:** Install via ClawHub (recommended) or npm.
-
 ```bash
-# ClawHub (OpenClaw agent integration)
-clawhub install mangadex-cli
-
-# NPM (global CLI)
 npm install -g @mtsku/mangadex-cli
 ```
 
-See [SKILL.md](./SKILL.md) for agent tool usage details.
-
-**For development / local testing:** Build from source.
+For local source install from this repository:
 
 ```bash
-git clone <your-repo>
-cd mangadex-cli
 npm install
 npm run build
+npm install -g .
 ```
 
-## Auth setup
+Repository: <https://github.com/mtsku/mangadex-cli>
 
-### Fast path: personal client login (recommended)
+## Auth Setup
 
-Per MangaDex docs, personal clients use OAuth password flow.
+### Personal client login (recommended)
 
 ```bash
-mangadexctl auth set-client <client_id> <client_secret>
-mangadexctl auth login <username> <password>
-mangadexctl whoami
+mangadexcli auth set-client <client_id> <client_secret>
+mangadexcli auth login <username> <password>
+mangadexcli whoami
 ```
 
 Alternative env vars:
@@ -70,59 +54,57 @@ export MANGADEX_CLIENT_ID="..."
 export MANGADEX_CLIENT_SECRET="..."
 ```
 
-### OAuth authorization-code exchange (advanced / public-client style)
-
-Use this only if you explicitly have an authorization code flow set up.
+### OAuth authorization-code exchange
 
 ```bash
-mangadexctl auth set-client <client_id> <client_secret>
-mangadexctl auth exchange --code <code> --redirect-uri <redirect_uri> [--code-verifier <pkce_verifier>]
-mangadexctl auth refresh
+mangadexcli auth set-client <client_id> <client_secret>
+mangadexcli auth exchange --code <code> --redirect-uri <redirect_uri> [--code-verifier <pkce_verifier>]
+mangadexcli auth refresh
 ```
 
-## Core examples
+## Core Examples
 
 ### Discovery/search
 
 ```bash
-mangadexctl search manga "blue lock" -n 5
-mangadexctl search author "Inoue Takehiko" -n 5
-mangadexctl search group "asura" -n 5
-mangadexctl works author "Inoue Takehiko" -n 15
-mangadexctl works group "asura" -n 20
+mangadexcli search manga "blue lock" -n 5
+mangadexcli search author "Inoue Takehiko" -n 5
+mangadexcli search group "asura" -n 5
+mangadexcli works author "Inoue Takehiko" -n 15
+mangadexcli works group "asura" -n 20
 ```
 
 ### Manga/chapter info
 
 ```bash
-mangadexctl manga details <manga_uuid>
-mangadexctl manga chapters <manga_uuid> --lang en -n 30
-mangadexctl manga latest <manga_uuid> --lang en -n 10
-mangadexctl chapter meta <chapter_uuid>
+mangadexcli manga details <manga_uuid>
+mangadexcli manga chapters <manga_uuid> --lang en -n 30
+mangadexcli manga latest <manga_uuid> --lang en -n 10
+mangadexcli chapter meta <chapter_uuid>
 ```
 
 ### Follow feed updates
 
 ```bash
-mangadexctl feed updates --window 24h --lang en -n 30
-mangadexctl feed updates --window 7d -n 100
+mangadexcli feed updates --window 24h --lang en -n 30
+mangadexcli feed updates --window 7d -n 100
 ```
 
 ### Recommendations
 
 ```bash
-mangadexctl recommend suggest --tags "action,psychological" -n 10
-mangadexctl recommend suggest --from-followed --window 7d --exclude-library -n 10
+mangadexcli recommend suggest --tags "action,psychological" -n 10
+mangadexcli recommend suggest --from-followed --window 7d --exclude-library -n 10
 ```
 
 ### JSON mode
 
 ```bash
-mangadexctl --json manga details <manga_uuid>
-mangadexctl --json feed updates --window 24h
+mangadexcli --json manga details <manga_uuid>
+mangadexcli --json feed updates --window 24h
 ```
 
-## Config/token storage
+## Config and Token Storage
 
 Stored config path:
 
@@ -132,28 +114,28 @@ Stored config path:
 
 File permissions are set to `0600`.
 
-Inspect resolution order:
+Inspect auth/token resolution:
 
 ```bash
-mangadexctl auth where
+mangadexcli auth where
 ```
 
 Resolution precedence:
 
 1. `--token`
 2. `MANGADEX_TOKEN` / `MANGADEX_ACCESS_TOKEN`
-3. stored config token
+3. Stored config token
 
 ## Troubleshooting
 
 - `MangaDex token is required`:
-  - use `auth set-token` or set `MANGADEX_TOKEN`
+  - Set `MANGADEX_TOKEN` or run `mangadexcli auth set-token <token>`
 - OAuth exchange/refresh fails:
-  - verify app redirect URI, client ID/secret, and PKCE verifier
-- empty follow feed:
-  - token may be valid but account has no followed updates in selected window/language
-- recommendation exclusions partial:
-  - exclusion depends on endpoint access/scope; CLI continues with available signals
+  - Verify redirect URI, client ID/secret, and PKCE verifier
+- Empty follow feed:
+  - The account may not have followed updates in that window/language
+- Recommendation exclusions partial:
+  - Exclusion coverage depends on endpoint access/scope
 
 ## Development
 

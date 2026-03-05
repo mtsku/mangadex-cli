@@ -11,7 +11,7 @@ function run(args) {
 
 test("prints root help", () => {
   const out = run(["--help"]);
-  assert.match(out, /mangadexctl/i);
+  assert.match(out, /mangadexcli/i);
   assert.match(out, /search/i);
 });
 

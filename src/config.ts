@@ -87,7 +87,7 @@ export function requireAccessToken(tokenFlag?: string): { token: string; source:
   const resolved = resolveAccessToken(tokenFlag);
   if (!resolved.token || resolved.source === "none") {
     throw new AuthError(
-      "MangaDex token is required for this command. Set MANGADEX_TOKEN or run: mangadexctl auth set-token <token>",
+      "MangaDex token is required for this command. Set MANGADEX_TOKEN or run: mangadexcli auth set-token <token>",
     );
   }
 

@@ -59,7 +59,7 @@ const intSchema = z.coerce.number().int().min(1);
 const program = new Command();
 
 program
-  .name("mangadexctl")
+  .name("mangadexcli")
   .description("Production-ready MangaDex CLI (direct API)")
   .option("--json", "Output raw JSON")
   .option("--dry-run", "Preview auth mutation output without writing")

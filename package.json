@@ -6,7 +6,7 @@
   "type": "module",
   "private": false,
   "bin": {
-    "mangadexctl": "dist/cli.js"
+    "mangadexcli": "dist/cli.js"
   },
   "files": [
     "dist",

@@ -1,0 +1,52 @@
+{
+  "name": "@mtsku/mangadex-cli",
+  "version": "0.1.0",
+  "description": "Production-ready MangaDex CLI for discovery, manga/chapter lookup, follow feed, and recommendations via direct MangaDex API.",
+  "license": "MIT",
+  "type": "module",
+  "private": false,
+  "bin": {
+    "mangadexctl": "dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "scripts",
+    "README.md",
+    "LICENSE",
+    "SKILL.md"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "check": "tsc --noEmit -p tsconfig.json",
+    "dev": "node --loader ts-node/esm src/cli.ts",
+    "start": "node dist/cli.js",
+    "test": "node --test test/*.test.mjs",
+    "prepublishOnly": "npm run check && npm run build && npm test"
+  },
+  "keywords": [
+    "mangadex",
+    "manga",
+    "cli",
+    "openclaw"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mtsku/mangadex-cli.git"
+  },
+  "bugs": {
+    "url": "https://github.com/matsku/mangadex-cli/issues"
+  },
+  "homepage": "https://github.com/mtsku/mangadex-cli#readme",
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "commander": "^12.1.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.10",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.2"
+  }
+}
